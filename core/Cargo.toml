@@ -7,6 +7,8 @@ edition = "2024"
 default = []
 
 [dependencies]
+bincode = { workspace = true }
 chrono = { workspace = true, optional = true }
 sofars = "0.3.3"
 thiserror = "2.0.17"
+zstd = { workspace = true }

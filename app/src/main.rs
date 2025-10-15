@@ -13,13 +13,21 @@ fn main() {
     let ra = time_format_to_radians(' ', 5, 55, 10.30536).unwrap();
     let dec = angle_format_to_radians('+', 7, 24, 25.4304).unwrap();
     let star = Star {
-        name: "Betelgeuse".to_string(),
+        hr: "2061".to_string(),
+        name: Some("Betelgeuse".to_string()),
+        common_name: None,
+        bayer: None,
+        bayer_full: None,
+        constellation: None,
+        notes: vec![],
         right_ascension: ra,
         declination: dec,
-        proper_motion_ra: arc_seconds_to_radians(27.54e-3) / dec.cos(),
-        proper_motion_dec: arc_seconds_to_radians(11.3e-3),
+        proper_motion_right_ascension: arc_seconds_to_radians(27.54e-3) / dec.cos(),
+        proper_motion_declination: arc_seconds_to_radians(11.3e-3),
         parallax: 6.55e-3,
         radial_velocity: 21.91,
+        visual_magnitude: 0.0,
+        b_v_color: None,
     };
 
     let observer = Observer {

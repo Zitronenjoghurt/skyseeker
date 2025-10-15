@@ -1,6 +1,7 @@
 use crate::error::{CoreError, CoreResult};
 use sofars::astro::atco13;
 
+pub mod codec;
 pub mod earth_orientation;
 pub mod error;
 pub mod math;
@@ -18,8 +19,8 @@ pub fn position_star(
     match atco13(
         star.right_ascension,
         star.declination,
-        star.proper_motion_ra,
-        star.proper_motion_dec,
+        star.proper_motion_right_ascension,
+        star.proper_motion_declination,
         star.parallax,
         star.radial_velocity,
         time.utc1,
