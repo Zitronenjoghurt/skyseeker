@@ -1,0 +1,12 @@
+[package]
+name = "skyseeker-core"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+default = []
+
+[dependencies]
+chrono = { workspace = true, optional = true }
+sofars = "0.3.3"
+thiserror = "2.0.17"
