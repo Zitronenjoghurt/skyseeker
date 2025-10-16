@@ -1,10 +1,69 @@
+use bevy::app::{PluginGroupBuilder, TaskPoolThreadAssignmentPolicy};
+use bevy::prelude::*;
+use bevy::render::settings::{RenderCreation, WgpuFeatures, WgpuSettings};
+use bevy::render::RenderPlugin;
+use bevy::tasks::available_parallelism;
+use bevy::DefaultPlugins;
+use bevy_egui::EguiPlugin;
 use skyseeker_core::codec::decode;
 use skyseeker_core::math::angle_format_to_radians;
 use skyseeker_core::position::earth_orientation::EarthOrientation;
 use skyseeker_core::position::observer::Observer;
 use skyseeker_core::position::time::Time;
 
+mod observation;
+mod ui;
+
+pub const VERSION_STRING: &str = "v0.1.0";
+
+pub struct AppPlugins;
+impl PluginGroup for AppPlugins {
+    fn build(self) -> PluginGroupBuilder {
+        PluginGroupBuilder::start::<Self>()
+            .add(ui::UiPlugin)
+            .add(observation::ObservationPlugin)
+    }
+}
+
 fn main() {
+    App::new()
+        .add_plugins(
+            DefaultPlugins
+                .set(RenderPlugin {
+                    render_creation: RenderCreation::Automatic(WgpuSettings {
+                        features: WgpuFeatures::POLYGON_MODE_LINE,
+                        ..default()
+                    }),
+                    ..default()
+                })
+                .set(WindowPlugin {
+                    primary_window: Some(Window {
+                        title: format!("Skyseeker ({VERSION_STRING})"),
+                        ..default()
+                    }),
+                    ..default()
+                })
+                // No parallelized I/O threads, using more threads for computing, potentially less idling but potential performance implications on I/O operations
+                // https://bevy-cheatbook.github.io/setup/perf.html#overprovisioning
+                .set(TaskPoolPlugin {
+                    task_pool_options: TaskPoolOptions {
+                        compute: TaskPoolThreadAssignmentPolicy {
+                            min_threads: available_parallelism(),
+                            max_threads: usize::MAX,
+                            percent: 1.0,
+                            on_thread_spawn: None,
+                            on_thread_destroy: None,
+                        },
+                        ..default()
+                    },
+                }),
+        )
+        .add_plugins(EguiPlugin::default())
+        .add_plugins(AppPlugins)
+        .run();
+}
+
+fn example() {
     let mut skyseeker = skyseeker_core::Skyseeker::new();
     skyseeker.load_standard_bodies();
     skyseeker.load_bodies(decode(include_bytes!("../../data/bsc5-stars.bin")).unwrap());

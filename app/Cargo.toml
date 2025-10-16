@@ -5,4 +5,8 @@ edition = "2024"
 
 [dependencies]
 skyseeker-core = { workspace = true, features = ["chrono"] }
-chrono = { workspace = true }
+bevy = "0.17.2"
+bevy_egui = { version = "0.37.1" }
+bevy_panorbit_camera = "0.30.0"
+egui-phosphor = { version = "0.10.0", features = ["regular"] }
+serde = { version = "1.0.228", features = ["derive"] }
