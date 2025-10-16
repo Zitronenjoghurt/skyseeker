@@ -1,3 +1,7 @@
+pub mod earth_orientation;
+pub mod observer;
+pub mod time;
+
 /// The position of an object in the sky
 #[derive(Debug)]
 pub struct Position {

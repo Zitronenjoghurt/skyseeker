@@ -16,6 +16,8 @@ pub enum CoreError {
     AngleFormatToRadiansBadSeconds,
     #[error("Unable to convert angle format to radians")]
     AngleFormatToRadians,
+    #[error("Body not found: id = '{0}'")]
+    BodyNotFound(String),
     #[error("Unable to calculate star position: invalid date")]
     StarPositionDate,
     #[error("Invalid time: bad year")]

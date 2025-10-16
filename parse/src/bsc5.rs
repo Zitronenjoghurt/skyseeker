@@ -1,9 +1,11 @@
 use anyhow::Context;
 use serde::{Deserialize, Serialize};
+use skyseeker_core::celestial_body::star::Star;
+use skyseeker_core::celestial_body::CelestialBody;
 use skyseeker_core::math::{
     angle_format_to_radians, arc_seconds_to_radians, time_format_to_radians,
 };
-use skyseeker_core::star::Star;
+use std::sync::Arc;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BSC5Entry {
@@ -73,14 +75,16 @@ pub struct BSC5EntryNote {
     pub remark: String,
 }
 
-pub fn parse(data: String) -> anyhow::Result<Vec<Star>> {
+pub fn parse(data: String) -> anyhow::Result<Vec<CelestialBody>> {
     let entries =
         serde_json::from_str::<Vec<BSC5Entry>>(&data).context("Failed to deserialize BSC5 data")?;
 
     let stars = entries
         .into_iter()
         .filter_map(|entry| {
-            (|| -> anyhow::Result<Star> {
+            (|| -> anyhow::Result<CelestialBody> {
+                let hr = entry.hr.parse::<u16>().context("failed to parse HR")?;
+
                 let right_ascension = parse_right_ascension(
                     entry.right_ascension_hours,
                     entry.right_ascension_minutes,
@@ -137,8 +141,9 @@ pub fn parse(data: String) -> anyhow::Result<Vec<Star>> {
                     None
                 };
 
-                Ok(Star {
-                    hr: entry.hr.clone(),
+                let star = Star {
+                    id: format!("HR {}", hr),
+                    hr: Some(hr),
                     name: entry.name,
                     common_name: entry.common,
                     bayer: entry.bayer,
@@ -157,7 +162,9 @@ pub fn parse(data: String) -> anyhow::Result<Vec<Star>> {
                     radial_velocity,
                     visual_magnitude,
                     b_v_color,
-                })
+                };
+
+                Ok(CelestialBody::Star(Arc::new(star)))
             })()
             .inspect_err(|e| println!("Skipping entry 'HR = {}' in BSC5: {}", entry.hr, e))
             .ok()
