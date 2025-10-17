@@ -3,10 +3,18 @@ name = "skyseeker-app"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+default = []
+tracy = ["tracing-subscriber", "tracing-tracy", "bevy/trace"]
+tracing-off = ["tracing/max_level_off", "tracing/release_max_level_off"]
+
 [dependencies]
 skyseeker-core = { workspace = true, features = ["chrono"] }
 bevy = "0.17.2"
 bevy_egui = { version = "0.37.1" }
-bevy_panorbit_camera = "0.30.0"
+chrono = { workspace = true }
 egui-phosphor = { version = "0.10.0", features = ["regular"] }
 serde = { version = "1.0.228", features = ["derive"] }
+tracing = { workspace = true }
+tracing-subscriber = { version = "0.3.20", features = ["env-filter", "fmt"], optional = true }
+tracing-tracy = { version = "=0.11.4", optional = true }

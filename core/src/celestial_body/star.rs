@@ -5,6 +5,7 @@ use crate::position::time::Time;
 use crate::position::Position;
 use bincode::{Decode, Encode};
 use sofars::astro::atco13;
+use tracing::instrument;
 
 /// Data sources:
 /// - https://simbad.cds.unistra.fr/simbad/sim-id?Ident=Betelgeuse&NbIdent=1&Radius=2&Radius.unit=arcmin&submit=submit+id
@@ -49,6 +50,7 @@ pub struct Star {
 }
 
 impl Star {
+    #[instrument(skip_all, name = "skyseeker::star::position")]
     pub fn position(
         &self,
         observer: &Observer,

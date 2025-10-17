@@ -26,6 +26,9 @@ impl PluginGroup for AppPlugins {
 }
 
 fn main() {
+    #[cfg(feature = "tracy")]
+    init_tracing();
+
     App::new()
         .add_plugins(
             DefaultPlugins
@@ -61,6 +64,15 @@ fn main() {
         .add_plugins(EguiPlugin::default())
         .add_plugins(AppPlugins)
         .run();
+}
+
+#[cfg(feature = "tracy")]
+fn init_tracing() {
+    use tracing_subscriber::prelude::*;
+
+    tracing_subscriber::registry()
+        .with(tracing_tracy::TracyLayer::default())
+        .init();
 }
 
 fn example() {

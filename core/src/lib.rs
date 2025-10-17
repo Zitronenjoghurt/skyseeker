@@ -2,6 +2,7 @@ use crate::error::{CoreError, CoreResult};
 use crate::position::Position;
 use position::{earth_orientation, observer, time};
 use std::collections::HashMap;
+use tracing::instrument;
 
 pub mod celestial_body;
 pub mod codec;
@@ -38,6 +39,11 @@ impl Skyseeker {
         self.bodies_by_id.get(body_id.as_ref())
     }
 
+    pub fn iter_bodies(&self) -> impl Iterator<Item = &celestial_body::CelestialBody> {
+        self.bodies_by_id.values()
+    }
+
+    #[instrument(skip_all, name = "skyseeker::position")]
     pub fn position(
         &self,
         body_id: impl AsRef<str>,

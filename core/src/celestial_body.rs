@@ -59,6 +59,38 @@ impl CelestialBody {
             CelestialBody::Sun => Ok(sun::sun_position(observer, time)),
         }
     }
+
+    pub fn visual_magnitude(&self) -> f64 {
+        match self {
+            Self::Star(star) => star.visual_magnitude,
+            Self::Moon => -3.0,
+            Self::Sun => -14.0,
+            _ => 0.0,
+        }
+    }
+
+    pub fn constellation(&self) -> Option<&str> {
+        match self {
+            Self::Star(star) => star.constellation.as_deref(),
+            _ => None,
+        }
+    }
+
+    pub fn is_star(&self) -> bool {
+        matches!(self, Self::Star(_))
+    }
+
+    pub fn is_planet(&self) -> bool {
+        matches!(self, Self::Planet(_))
+    }
+
+    pub fn is_moon(&self) -> bool {
+        matches!(self, Self::Moon)
+    }
+
+    pub fn is_sun(&self) -> bool {
+        matches!(self, Self::Sun)
+    }
 }
 
 pub(crate) fn position_from_ecliptic_coords(

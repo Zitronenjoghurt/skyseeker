@@ -5,6 +5,7 @@ edition = "2024"
 
 [features]
 default = []
+tracing-off = ["tracing/max_level_off", "tracing/release_max_level_off"]
 
 [dependencies]
 astro = "2.0.0"
@@ -12,4 +13,5 @@ bincode = { workspace = true }
 chrono = { workspace = true, optional = true }
 sofars = "0.3.3"
 thiserror = "2.0.17"
+tracing = { workspace = true }
 zstd = { workspace = true }

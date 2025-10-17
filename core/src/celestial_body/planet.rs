@@ -3,6 +3,7 @@ use crate::position::observer::Observer;
 use crate::position::time::Time;
 use crate::position::Position;
 use bincode::{Decode, Encode};
+use tracing::instrument;
 
 #[derive(Debug, Copy, Clone, Encode, Decode)]
 pub enum Planet {
@@ -40,6 +41,7 @@ impl Planet {
         }
     }
 
+    #[instrument(skip_all, name = "skyseeker::planet::position")]
     pub fn position(&self, observer: &Observer, time: &Time) -> Position {
         let (ecliptic_coords, _) = astro::planet::geocent_apprnt_ecl_coords(
             &self.get_astro_planet(),
